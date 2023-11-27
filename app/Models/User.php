@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model\Comment;
 use Illuminate\Database\Eloquent\Model\Like;
 use Illuminate\Database\Eloquent\Model\User_Group;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class User extends Model
 {
@@ -63,5 +64,24 @@ class User extends Model
     public function user_groups() : HasMany
     {
         return $this->hasMany(User_Group::class, 'UserId', 'Id');
+    }
+
+    public function generateToken()
+    {
+        $token = Str::random(60);
+        return $token;
+    }
+
+    public function checkUserExistence($login)
+    {
+        $user = Token::where('email', $login)->first();
+
+        if ($user) {
+            // User with the given email exists
+            return true;
+        } else {
+            // User does not exist
+            return false;
+        }
     }
 }

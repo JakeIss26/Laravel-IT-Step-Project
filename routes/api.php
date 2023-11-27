@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\AuthController;
 use App\Models\Cabinet;
 use App\Models\User;
 /*
@@ -25,6 +26,7 @@ Route::put('/put/{id}', [CabinetController::class, 'put']);
 Route::delete('/delete/{id}', [CabinetController::class, 'delete']);
 Route::post('/create', [CabinetController::class, 'create']);
 Route::post('/register', [RegistrationController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

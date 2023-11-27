@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('avatar_path')->nullable();
+        Schema::create('tokens', function (Blueprint $table) {
+            $table->id();
+            $table->string('token')->unique();
+            $table->string('login')->unique();
+            $table->timestamps();
         });
     }
 
@@ -21,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('tokens');
     }
 };
