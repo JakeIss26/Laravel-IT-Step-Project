@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model\Post;
 use Illuminate\Database\Eloquent\Model\FS;
 use Illuminate\Database\Eloquent\Model\Group;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class User extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'email', 'birth_date'];
+    // protected $fillable = ['name', 'email', 'birth_date'];
 
 
     public function posts() : HasMany
@@ -48,7 +49,7 @@ class User extends Model
     }
 
 
-    public function comments() : HasMany 
+    public function comments() : HasMany
     {
         return $this->hasMany(Comment::class, 'AuthorId', 'Id');
     }

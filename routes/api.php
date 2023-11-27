@@ -3,7 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CabinetController;
+use App\Http\Controllers\RegistrationController;
 use App\Models\Cabinet;
+use App\Models\User;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,6 +24,7 @@ Route::post('/post', [CabinetController::class, 'post']);
 Route::put('/put/{id}', [CabinetController::class, 'put']);
 Route::delete('/delete/{id}', [CabinetController::class, 'delete']);
 Route::post('/create', [CabinetController::class, 'create']);
+Route::post('/register', [RegistrationController::class, 'register']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
