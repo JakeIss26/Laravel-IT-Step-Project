@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model\Photo;
 use Illuminate\Database\Eloquent\Model\Comment;
 use Illuminate\Database\Eloquent\Model\Like;
