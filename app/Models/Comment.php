@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Model\User;
-use Illuminate\Database\Eloquent\Model\Post;
+use App\Models\User;
+use App\Models\Post;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
@@ -20,8 +20,8 @@ class Comment extends Model
     }
 
 
-    public function author_user() : BelongsTo
-    {
-        return $this->belongsTo(Post::class, 'Id', 'PostId');
-    }
+    // public function author_user() : BelongsTo
+    // {
+    //     return $this->belongsTo(Post::class, 'Id', 'PostId');
+    // }
 }

@@ -4,20 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function showPosts() {
+    public function __construct()
+    {
+        // Apply the 'jwt.auth' middleware to all methods in this controller
+        $this->middleware('jwt.auth');
+    }
+
+    public function index() {
+
+        $user = Auth::user();
         $posts = Post::all();
         return $posts;
     }
 
-    public function getById($id) {
+    public function show(string $id, ) {
+        $user = Auth::user();
         $post = Post::find($id);
         return $post;
     }
 
-    public function addPost(Request $request) {
+    public function store(Request $request) {
         $post = new Post();
         $post->name = $request->name;
         $post->user_id = $request->user_id;
@@ -27,15 +37,15 @@ class PostController extends Controller
         return $post;
     }
 
-    public function removePost($id) {
+    public function destroy(string $id) {
         $post = Post::find($id);
         $post->delete();
 
         return response('Delete successfully', 204);
     }
 
-    public function updatePost(Request $request, $postId) {
-        $post = Post::find($postId);
+    public function update(Request $request, string $id) {
+        $post = Post::find($id);
         $post->update([
             'name' => $request->input('name', $post->name),
             'user_id' => $request->input('user_id', $post->user_id),

@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model\Post;
 use Illuminate\Database\Eloquent\Model\FS;
@@ -14,12 +18,23 @@ use Illuminate\Database\Eloquent\Model\User_Group;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
-class User extends Model
+class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory;
-    // protected $fillable = ['name', 'email', 'birth_date'];
+    use HasFactory, Notifiable;
+    protected $fillable = ['login', 'password', 'birth_date', 'name', 'email'];
 
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    
     public function posts() : HasMany
     {
         return $this->hasMany(Post::class, 'UserId', 'Id');
@@ -64,24 +79,5 @@ class User extends Model
     public function user_groups() : HasMany
     {
         return $this->hasMany(User_Group::class, 'UserId', 'Id');
-    }
-
-    public function generateToken()
-    {
-        $token = Str::random(60);
-        return $token;
-    }
-
-    public function checkUserExistence($login)
-    {
-        $user = Token::where('email', $login)->first();
-
-        if ($user) {
-            // User with the given email exists
-            return true;
-        } else {
-            // User does not exist
-            return false;
-        }
     }
 }

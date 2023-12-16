@@ -7,17 +7,17 @@ use App\Models\Group;
 
 class GroupController extends Controller
 {
-    public function showGroups() {
+    public function index() {
         $groups = Group::all();
         return $groups;
     }
 
-    public function getById($id) {
+    public function show(string $id) {
         $post = Group::find($id);
         return $post;
     }
 
-    public function addGroup(Request $request) {
+    public function store(Request $request) {
         $group = new Group();
         $group->description = $request->description;
         $group->owner = $request->owner;
@@ -26,15 +26,15 @@ class GroupController extends Controller
         return $group;
     }
 
-    public function removeGroup($id) {
+    public function destroy(string $id) {
         $group = Group::find($id);
         $group->delete();
 
         return response('Delete successfully', 204);
     }
 
-    public function updateGroup(Request $request, $groupId) {
-        $group = Group::find($groupId);
+    public function update(Request $request, string $id) {
+        $group = Group::find($id);
         $group->update([
             'description' => $request->input('description', $group->description),
             'owner' => $request->input('owner', $group->owner),

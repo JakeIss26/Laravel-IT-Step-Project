@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class RegistrationController extends Controller
@@ -21,9 +23,10 @@ class RegistrationController extends Controller
                 'required',
                 'min:6',
                 'max:20',
-                'alpha_num:ascii'
+                'alpha_num'
             ],
             'birth_date' => [
+                'nullable',
                 'min:8',
                 'max:20'
             ],
@@ -35,19 +38,21 @@ class RegistrationController extends Controller
             'email' => [
                 'required',
                 'min:6',
-                'max:50',
-                'email:rfc,dns'
+                'max:50'
             ]
         ]);
         $user = new User();
         $user->login = $validated['login'];
-        $user->password = $validated['password'];
+        $user->password = Hash::make($validated['password']);
         $user->birth_date = $validated['birth_date'];
         $user->name = $validated['name'];
-        $user->email = Hash::make($validated['email']);
+        $user->email = $validated['email'];
         $user->save();
 
-        return $user;
+        $token = JWTAuth::fromUser($user);
+
+        return response()->json(['user' => $user, 'access_token' => $token], 200);
+
         // return redirect('/login');
     }
 }

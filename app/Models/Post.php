@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Model\Photo;
-use Illuminate\Database\Eloquent\Model\Comment;
-use Illuminate\Database\Eloquent\Model\Like;
-use Illuminate\Database\Eloquent\Model\User;
+use App\Models\Photo;
+use App\Models\Comment;
+use App\Models\Like;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
@@ -23,9 +23,9 @@ class Post extends Model
     }
 
 
-    public function comments() : HasMany 
+    public function comments() 
     {
-        return $this->hasMany(Comment::class, 'PostId', 'Id');
+        return $this->hasMany(Comment::class);
     }
 
 
