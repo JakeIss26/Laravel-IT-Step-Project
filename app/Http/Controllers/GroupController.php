@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Group;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -22,7 +23,7 @@ class GroupController extends Controller
         $group->description = $request->description;
         $group->owner = $request->owner;
         $group->save();
-
+        // dd($post);
         return $group;
     }
 

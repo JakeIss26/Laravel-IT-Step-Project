@@ -15,10 +15,8 @@ class PostController extends Controller
     }
 
     public function index() {
-
-        $user = Auth::user();
         $posts = Post::all();
-        return $posts;
+        return response()->json($posts);
     }
 
     public function show(string $id, ) {
@@ -33,7 +31,6 @@ class PostController extends Controller
         $post->user_id = $request->user_id;
         $post->publication_time = $request->publication_time;
         $post->save();
-
         return $post;
     }
 

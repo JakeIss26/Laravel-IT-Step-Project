@@ -18,6 +18,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        // dd($credentials);
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Invalid login or password'], 401);
         }

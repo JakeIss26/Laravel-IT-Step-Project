@@ -8,13 +8,13 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Model\Post;
-use Illuminate\Database\Eloquent\Model\FS;
-use Illuminate\Database\Eloquent\Model\Group;
-use Illuminate\Database\Eloquent\Model\Photo;
-use Illuminate\Database\Eloquent\Model\Comment;
-use Illuminate\Database\Eloquent\Model\Like;
-use Illuminate\Database\Eloquent\Model\User_Group;
+use App\Models\Post;
+use App\Models\FS;
+use App\Models\Group;
+use App\Models\Photo;
+use App\Models\Comment;
+use App\Models\Like;
+use App\Models\User_Group;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
@@ -35,9 +35,9 @@ class User extends Authenticatable implements JWTSubject
     }
 
     
-    public function posts() : HasMany
+    public function posts() 
     {
-        return $this->hasMany(Post::class, 'UserId', 'Id');
+        return $this->hasMany(Post::class, 'user_id', 'id');
     }
 
 

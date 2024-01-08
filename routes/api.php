@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,8 +27,11 @@ Route::post('user/register', [RegistrationController::class, 'register']);
 // AuthController
 Route::post('user/login', [AuthController::class, 'login']);
 
+Route::post('image/upload', [ImageController::class, 'upload']);
 
-Route::middleware(['web', 'jwt.auth'])->group(function () {
+
+Route::middleware(['web', 'jwt.auth'])->group(function () 
+{
     Route::resource('post', PostController::class, [
         'only' => ['index', 'show', 'store', 'update', 'destroy']
     ]);
@@ -38,8 +43,10 @@ Route::middleware(['web', 'jwt.auth'])->group(function () {
     Route::resource('comment', CommentController::class, [
         'only' => ['index', 'show', 'store', 'update', 'destroy']
     ]);
+    Route::resource('data', UserController::class, [
+        'only' => ['index', 'show', 'store', 'update', 'destroy']
+    ]);
 });
-
 
 
 
