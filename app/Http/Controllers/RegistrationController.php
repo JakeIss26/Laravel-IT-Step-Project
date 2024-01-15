@@ -55,9 +55,9 @@ class RegistrationController extends Controller
         $user->avatar_path = $validated['photo_path'];
         $user->save();
 
-        $token = JWTAuth::fromUser($user);
+        // $token = JWTAuth::fromUser($user);
 
-        return response()->json(['user' => $user, 'access_token' => $token], 200);
+        return response()->json(['user' => $user], 200);
 
         // return redirect('/login');
     }

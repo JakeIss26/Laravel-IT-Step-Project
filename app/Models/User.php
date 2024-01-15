@@ -16,6 +16,7 @@ use App\Models\Comment;
 use App\Models\Like;
 use App\Models\User_Group;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable implements JWTSubject
@@ -43,13 +44,13 @@ class User extends Authenticatable implements JWTSubject
 
     public function followers() : HasMany
     {
-        return $this->hasMany(FS::class, 'FollowerId', 'Id');
+        return $this->hasMany(FS::class, 'author_id', 'id');
     }
 
 
     public function subscriptions() : HasMany
     {
-        return $this->hasMany(FS::class, 'AuthorId', 'Id');
+        return $this->hasMany(FS::class, 'follower_id', 'id');
     }
 
 

@@ -44,7 +44,7 @@ Route::middleware(['web', 'jwt.auth'])->group(function ()
         'only' => ['index', 'show', 'store', 'update', 'destroy']
     ]);
     Route::resource('data', UserController::class, [
-        'only' => ['index', 'show', 'store', 'update', 'destroy']
+        'only' => ['index', 'show', 'store', 'update', 'destroy', 'getExternalData']
     ]);
 });
 

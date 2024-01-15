@@ -19,12 +19,18 @@ class GroupController extends Controller
     }
 
     public function store(Request $request) {
+        $user = Auth::user();
+        
         $group = new Group();
         $group->description = $request->description;
-        $group->owner = $request->owner;
+        $group->owner = $user->id;
         $group->save();
+        return response()->json([
+            'description' => $group->description,
+            'owner' => $group->owner,
+        ], 200);
         // dd($post);
-        return $group;
+        // return $group;
     }
 
     public function destroy(string $id) {

@@ -14,7 +14,10 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::user();
-        // dd($user->posts()->count());
+        $postsCount = $user->posts()->count();
+        $followers = $user->followers()->count();
+        $subscriptions = $user->subscriptions()->count();
+        // dd($user, $user->posts());
 
         return response()->json([
             'id' => $user->id,
@@ -23,17 +26,16 @@ class UserController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'avatar_path' => $user->avatar_path,
+            'posts' => $postsCount,
+            'followers' => $followers,
+            'subscriptions' => $subscriptions,
             // Добавьте другие необходимые поля
         ]);
         // $users = User::all();
         // return response()->json($users);
     }
 
-    public function getExternalData() {
-        $user = Auth::user();
-        
-
-    }
+    
     /**
      * Store a newly created resource in storage.
      */
