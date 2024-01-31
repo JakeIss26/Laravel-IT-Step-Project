@@ -28,6 +28,7 @@ Route::post('user/register', [RegistrationController::class, 'register']);
 Route::post('user/login', [AuthController::class, 'login']);
 
 Route::post('image/upload', [ImageController::class, 'upload']);
+Route::post('image/uploadPhotos', [ImageController::class, 'uploadPhotos']);
 
 
 Route::middleware(['web', 'jwt.auth'])->group(function () 

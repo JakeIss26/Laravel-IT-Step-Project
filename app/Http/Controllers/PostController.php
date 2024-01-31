@@ -26,10 +26,11 @@ class PostController extends Controller
     }
 
     public function store(Request $request) {
+        $user = Auth::user();
         $post = new Post();
         $post->name = $request->name;
-        $post->user_id = $request->user_id;
-        $post->publication_time = $request->publication_time;
+        $post->user_id = $user->id;
+        $post->publication_time = now();
         $post->save();
         return $post;
     }

@@ -8,14 +8,12 @@ use App\Models\Post;
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
 
+    public function index() {
+        $comments = Comment::all();
+        return response()->json($comments);
+    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $comment = new Comment();
@@ -32,7 +30,7 @@ class CommentController extends Controller
     public function show(string $id)
     {
         $post = Post::with('comments')->find($id);
-        return $post->comments;
+        return $post;
     }
 
 
@@ -42,11 +40,17 @@ class CommentController extends Controller
     public function update(Request $request, string $id)
     {
         $comment = Comment::find($id);
+
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+    
         $comment->update([
             'post_id' => $request->input('post_id', $comment->post_id),
             'author_id' => $request->input('author_id', $comment->author_id),
+            'description' => $request->input('description', $comment->description),
         ]);
-
+    
         return $comment;
     }
 

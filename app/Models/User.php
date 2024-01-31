@@ -22,7 +22,7 @@ use Illuminate\Support\Str;
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
-    protected $fillable = ['login', 'password', 'birth_date', 'name', 'email'];
+    protected $fillable = ['login', 'password', 'birth_date', 'name', 'email', 'avatar_path'];
 
 
     public function getJWTIdentifier()

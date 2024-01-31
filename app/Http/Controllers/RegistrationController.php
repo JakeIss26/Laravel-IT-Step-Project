@@ -40,7 +40,7 @@ class RegistrationController extends Controller
                 'min:6',
                 'max:50'
             ],
-            'photo_path' => [
+            'avatar_path' => [
                 'required',
                 'min:5',
                 'max:250'
@@ -52,12 +52,12 @@ class RegistrationController extends Controller
         $user->birth_date = $validated['birth_date'];
         $user->name = $validated['name'];
         $user->email = $validated['email'];
-        $user->avatar_path = $validated['photo_path'];
+        $user->avatar_path = $validated['avatar_path'];
         $user->save();
 
         // $token = JWTAuth::fromUser($user);
 
-        return response()->json(['user' => $user], 200);
+        return response()->json(['user' => $user], 201);
 
         // return redirect('/login');
     }

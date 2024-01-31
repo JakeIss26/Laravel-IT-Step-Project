@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Comment extends Model
 {
     use HasFactory;
-    protected $fillable = ['post_id', 'author_id'];
+    protected $fillable = ['post_id', 'author_id', 'description'];
 
 
     public function author_user() : BelongsTo
