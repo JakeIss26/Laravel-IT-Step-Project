@@ -6,61 +6,92 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Image;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Photo;
+use App\Models\Post;
+use App\Models\user;
+
 
 class ImageController extends Controller
 {
-        /**
-     * Store a newly created resource in storage.
-     */
-    public function upload(Request $request)
+
+    public function getPhotosByPostId(string $postId) {
+        $post = Post::findOrFail($postId);
+        $photos = $post->photos;
+        return $photos;
+    }
+
+    public function getPhotoPath(Request $request)
     {
-        $request->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-    
-        $image = $request->file('photo');
-        $imageName = time().'.'.$image->extension();
-    
-        // Сохранение оригинала
-        $image->storeAs('photos', $imageName, 'public');
-    
-        // Полный путь к сохраненному изображению
-        $photoFullPath = storage_path('app/public/photos/' . $imageName);
-    
-        // Замена обратных слешей на прямые
-        $photoFullPath = str_replace('\\', '/', $photoFullPath);
-    
-        // Возвращаем ассоциативный массив вместо JSON-кодированной строки
+        // Получаем имя файла из запроса
+        $imageName = $request->input('photo_name');
+        
+        // Формируем полный URL-путь к фотографии
+        $photoFullPath = asset('photos/' . $imageName);
+        
+        // Возвращаем путь к фотографии
         return response(['photo_path' => $photoFullPath], 200)->header('Content-Type', 'application/json');
     }
 
+    public function upload(Request $request)
+    {
+        $userId = $request->input('user_id');
+        
+        $image = $request->file('photo');
+        $imageName = $request->input('photo_name');
+        $image->storeAs('photos', $imageName, 'public'); // Сохраняем в папку storage/app/public/photos
+        
+        // Формируем полный путь к изображению
+        $photoFullPath = asset('photos/' . $imageName); // Изменили путь
+        
+        // Сохраняем информацию о изображении в базе данных
+        $photo = new Photo();
+        $photo->user_id = $userId;
+        $photo->publication_time = now();
+        $photo->image_path = $photoFullPath;
+        $photo->post_id = 0;
+        $photo->save();
+        
+        // Возвращаем путь к сохраненному изображению
+        return response(['photo_path' => $photoFullPath], 200)->header('Content-Type', 'application/json');
+    }
+    
+
 
     public function uploadPhotos(Request $request) {
-        $photos = $request->file('photos');
-        // dd($photos);
-        $paths = [];
+
+        $postId = $request->input('post_id');
     
-        foreach ($photos as $photo) {
-            // Валидация каждого изображения
-            $photo->validate([
-                'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
+        $uploadedPhotos = [];
     
-            $imageName = time().'.'.$photo->extension();
+        foreach ($request->file('photos') as $image) {
+    
+            $imageName = $image->getClientOriginalName();
     
             // Сохранение оригинала
-            $photo->storeAs('photos', $imageName, 'public');
-    
+            $image->storeAs('photos', $imageName, 'public');
+        
             // Полный путь к сохраненному изображению
-            $photoFullPath = realpath(storage_path('app/public/photos/' . $imageName));
+            $photoFullPath = asset('photos/' . $imageName);
+            
+            $user = Auth::user();
+            $photo = new Photo();
     
-            // Замена прямых слешей на обратные
-            $photoFullPath = str_replace('\\', '/', $photoFullPath);
+            if ($user) {
+                $photo->user_id = $user->id;
+                $photo->publication_time = now();
+                $photo->image_path = $photoFullPath;
+                $photo->post_id = $postId;
+                $photo->save();
+            }
     
-            $paths[] = $photoFullPath;
+            $uploadedPhotos[] = [
+                'photo_path' => $photoFullPath,
+                'photo_id' => $photo->id,
+            ];
         }
-
-
-        return response(['photos_list' => $paths], 200)->header('Content-Type', 'application/json');
+    
+        return response()->json(['uploaded_photos' => $uploadedPhotos], 200);
     }
+    
 }

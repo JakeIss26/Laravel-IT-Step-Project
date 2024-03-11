@@ -17,9 +17,9 @@ class Post extends Model
     protected $fillable = ['name', 'user_id', 'publication_time'];
 
 
-    public function photos() : HasMany
+    public function photos()
     {
-        return $this->hasMany(Photo::class, 'PostId', 'Id');
+        return $this->hasMany(Photo::class);
     }
 
 

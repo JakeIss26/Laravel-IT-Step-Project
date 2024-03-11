@@ -14,8 +14,12 @@ class PostController extends Controller
         $this->middleware('jwt.auth');
     }
 
+    // public function index() {
+    //     $posts = Post::all();
+    //     return response()->json($posts);
+    // }
     public function index() {
-        $posts = Post::all();
+        $posts = Post::paginate(10); // Пагинируем результаты, 10 постов на страницу
         return response()->json($posts);
     }
 
@@ -32,11 +36,20 @@ class PostController extends Controller
         $post->user_id = $user->id;
         $post->publication_time = now();
         $post->save();
-        return $post;
+        return $post->id;
     }
 
-    public function destroy(string $id) {
+    public function destroy(Request $request, string $id) {
         $post = Post::find($id);
+
+        if (!$post) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+
+        if ($post->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $post->delete();
 
         return response('Delete successfully', 204);
@@ -44,6 +57,11 @@ class PostController extends Controller
 
     public function update(Request $request, string $id) {
         $post = Post::find($id);
+
+        if ($post->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $post->update([
             'name' => $request->input('name', $post->name),
             'user_id' => $request->input('user_id', $post->user_id),

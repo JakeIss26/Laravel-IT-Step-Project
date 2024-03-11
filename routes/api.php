@@ -28,11 +28,16 @@ Route::post('user/register', [RegistrationController::class, 'register']);
 Route::post('user/login', [AuthController::class, 'login']);
 
 Route::post('image/upload', [ImageController::class, 'upload']);
-Route::post('image/uploadPhotos', [ImageController::class, 'uploadPhotos']);
+Route::post('image/getPhotoPath', [ImageController::class, 'getPhotoPath']);
+// Route::post('image/upload', [ImageController::class, 'upload']);
+// Route::post('image/uploadPhotos', [ImageController::class, 'uploadPhotos']);
 
 
 Route::middleware(['web', 'jwt.auth'])->group(function () 
 {
+
+    Route::post('user/logout', [AuthController::class, 'logout']);
+
     Route::resource('post', PostController::class, [
         'only' => ['index', 'show', 'store', 'update', 'destroy']
     ]);
@@ -47,6 +52,9 @@ Route::middleware(['web', 'jwt.auth'])->group(function ()
     Route::resource('data', UserController::class, [
         'only' => ['index', 'show', 'store', 'update', 'destroy', 'getExternalData']
     ]);
+
+    Route::post('image/uploadPhotos', [ImageController::class, 'uploadPhotos']);
+    Route::get('image/getPhotos/{postId}', [ImageController::class, 'getPhotosByPostId']);
 });
 
 

@@ -13,24 +13,32 @@ class CommentController extends Controller
         $comments = Comment::all();
         return response()->json($comments);
     }
+    
+    public function show(string $id)
+    {
+        $comment = Comment::find($id);
+
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+
+        $post = Post::with('comments')->find($id);
+        return $post;
+    }
 
     public function store(Request $request)
     {
+        $post = Post::find($request->post_id);
+        if (!$post) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+
         $comment = new Comment();
         $comment->post_id = $request->post_id;
         $comment->author_id = $request->author_id;
         $comment->save();
 
         return $comment;
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $post = Post::with('comments')->find($id);
-        return $post;
     }
 
 
@@ -44,6 +52,11 @@ class CommentController extends Controller
         if (!$comment) {
             return response()->json(['message' => 'Comment not found'], 404);
         }
+
+        if ($comment->author_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
     
         $comment->update([
             'post_id' => $request->input('post_id', $comment->post_id),
@@ -57,8 +70,19 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
+        $comment = Comment::find($id);
+
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+
+        if ($comment->author_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+
         $comment = Comment::find($id);
         $comment->delete();
 

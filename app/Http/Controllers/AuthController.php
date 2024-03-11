@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Token;
@@ -28,7 +27,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        JWTAuth::invalidate();
+        $token = JWTAuth::getToken();
+        JWTAuth::invalidate($token);
         
         return response()->json(['message' => 'Logout successful'], 200);
     }

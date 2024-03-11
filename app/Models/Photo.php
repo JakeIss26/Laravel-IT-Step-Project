@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Photo extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'user_id', 'publication_time'];
+    protected $fillable = ['user_id', 'publication_time', 'image_path', 'post_id'];
 
 
     public function user() : BelongsTo

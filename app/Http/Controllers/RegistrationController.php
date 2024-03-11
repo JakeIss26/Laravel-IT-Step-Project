@@ -26,9 +26,9 @@ class RegistrationController extends Controller
                 'alpha_num'
             ],
             'birth_date' => [
-                'nullable',
-                'min:8',
-                'max:20'
+                'required'
+                // 'min:8',
+                // 'max:20'
             ],
             'name' => [
                 'required',
