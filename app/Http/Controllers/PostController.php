@@ -4,69 +4,52 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Services\PostService;
+use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Auth;
+
 
 class PostController extends Controller
 {
+    protected $postService;
+
     public function __construct()
     {
-        // Apply the 'jwt.auth' middleware to all methods in this controller
+        
+        $this->postService = new PostService();
         $this->middleware('jwt.auth');
     }
 
-    // public function index() {
-    //     $posts = Post::all();
-    //     return response()->json($posts);
-    // }
     public function index() {
-        $posts = Post::paginate(10); // Пагинируем результаты, 10 постов на страницу
-        return response()->json($posts);
+        $number = 5;
+        $posts = $this->postService->getPosts($number);
+        return $posts;
     }
 
-    public function show(string $id, ) {
-        $user = Auth::user();
-        $post = Post::find($id);
+    public function show(string $id) {
+        $post = $this->postService->showPost($id);
         return $post;
     }
 
-    public function store(Request $request) {
+    public function store(PostRequest $request) {
         $user = Auth::user();
-        $post = new Post();
-        $post->name = $request->name;
-        $post->user_id = $user->id;
-        $post->publication_time = now();
-        $post->save();
-        return $post->id;
+        $data = $request->all();
+
+        $post = $this->postService->addPost($data, $user);
+
+        return $post;
     }
 
-    public function destroy(Request $request, string $id) {
-        $post = Post::find($id);
-
-        if (!$post) {
-            return response()->json(['error' => 'Post not found'], 404);
-        }
-
-        if ($post->user_id !== $request->user()->id) {
-            return response()->json(['error' => 'Forbidden'], 403);
-        }
-
-        $post->delete();
-
-        return response('Delete successfully', 204);
+    public function destroy(string $id) {
+        $response = $this->postService->deletePost($id);
+        return $response;
     }
 
-    public function update(Request $request, string $id) {
-        $post = Post::find($id);
-
-        if ($post->user_id !== $request->user()->id) {
-            return response()->json(['error' => 'Forbidden'], 403);
-        }
-
-        $post->update([
-            'name' => $request->input('name', $post->name),
-            'user_id' => $request->input('user_id', $post->user_id),
-            'publication_time' => $request->input('publication_time', $post->publication_time),
-        ]);
+    public function update(PostRequest $request, string $id) {
+        $user = Auth::user();
+        $data = $request->all();
+        
+        $post = $this->postService->updatePost($data, $user, $id);
 
         return $post;
     }

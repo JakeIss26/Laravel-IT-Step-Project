@@ -6,30 +6,30 @@ use App\Models\User;
 use App\Models\Token;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserService;
+use App\Http\Requests\AuthorizationRequest;
 
 class AuthController extends Controller
 {
 
-    public function login(Request $request)
+    public function __construct()
     {
-        $credentials = $request->validate([
-            'login' => 'required',
-            'password' => 'required',
-        ]);
-
-        // dd($credentials);
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Invalid login or password'], 401);
-        }
-
-        return response()->json(['access_token' => $token], 200);
+        
+        $this->userService = new UserService();
     }
+
+    public function login(AuthorizationRequest $request)
+    {
+        $data = $request->all();
+        $token = $this->userService->loginUser($data);
+
+        return $token;
+    }
+    
 
     public function logout(Request $request)
     {
-        $token = JWTAuth::getToken();
-        JWTAuth::invalidate($token);
-        
-        return response()->json(['message' => 'Logout successful'], 200);
+        $response = $this->userService->logoutUser();
+        return $response;
     }
 }

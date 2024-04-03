@@ -4,90 +4,55 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Group;
+use App\Services\GroupService;
+use App\Http\Requests\GroupRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
+
+    protected $groupService;
+
+    public function __construct()
+    {
+        
+        $this->groupService = new GroupService();
+        $this->user = Auth::user();
+        $this->middleware('jwt.auth');
+    }
+
     public function index() {
-        $groups = Group::all();
+        $groups = $this->groupService->getGroups();
         return $groups;
     }
 
     public function show(string $id) {
-        $post = Group::find($id);
-        return $post;
+        $group = $this->groupService->showGroup($id);
+        return $group;
     }
 
-    public function store(Request $request) {
+    public function store(GroupRequest $request) {
         $user = Auth::user();
+        $data = $request->all();
 
-        // if (!$request->has('owner')) {
-        //     return response()->json(['error' => 'The owner field is required.'], 422);
-        // }
+        $group = $this->groupService->addGroup($data, $user);
 
-        // $ownerId = $request->input('owner');
-
-        // Валидируем, что пользователь существует
-        // if (!User::find($ownerId)) {
-        //     return response()->json(['error' => 'Invalid owner.'], 422);
-        // }
-        
-        $group = new Group();
-        $group->description = $request->description;
-        $group->owner = $user->id;
-        $group->save();
-        return response()->json([
-            'description' => $group->description,
-            'owner' => $group->owner,
-        ], 201);
-        // dd($post);
-        // return $group;
+        return $group;
     }
 
-    public function destroy(Request $request, string $id) {
-        $group = Group::find($id);
-
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-
-        if ($group->owner !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        $group->delete();
-
-        return response('Delete successfully', 204);
+    public function destroy(string $id) {
+        $response = $this->groupService->deleteGroup($id);
+        return $response;
     }
 
-    public function update(Request $request, string $id)
+    public function update(GroupRequest $request, string $id)
     {
-        $group = Group::find($id);
-    
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-    
-        if ($group->owner !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-    
-        // Проверка, что владелец, переданный в запросе, существует
-        if (!$request->has('owner') || !User::find($request->input('owner'))) {
-            return response()->json(['message' => 'Invalid owner'], 422);
-        }
+        $user = Auth::user();
+        $data = $request->all();
 
-        if (!$request->has('description') || $request->input('description') === null) {
-            return response()->json(['message' => 'The description field is required.'], 422);
-        }
-    
-        // Обновление группы
-        $group->update([
-            'description' => $request->input('description', $group->description),
-            'owner' => $request->input('owner', $group->owner),
-        ]);
-    
+        $group = $this->groupService->updateGroup($data, $user, $id);
+
         return $group;
     }
     

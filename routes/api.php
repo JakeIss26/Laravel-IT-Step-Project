@@ -9,6 +9,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\UserGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,10 @@ Route::middleware(['web', 'jwt.auth'])->group(function ()
     ]);
     Route::resource('data', UserController::class, [
         'only' => ['index', 'show', 'store', 'update', 'destroy', 'getExternalData']
+    ]);
+
+    Route::resource('userGroup', UserGroupController::class, [
+        'only' => ['index', 'show', 'store', 'update', 'destroy']
     ]);
 
     Route::post('image/uploadPhotos', [ImageController::class, 'uploadPhotos']);

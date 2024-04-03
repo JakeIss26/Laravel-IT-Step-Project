@@ -4,14 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Comment;
+use App\Services\CommentService;
+use App\Http\Requests\CommentRequest;
 use App\Models\Post; 
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
 
+    protected $commentService;
+
+    public function __construct()
+    {
+        
+        $this->groupService = new CommentService();
+        $this->user = Auth::user();
+        // Apply the 'jwt.auth' middleware to all methods in this controller
+        $this->middleware('jwt.auth');
+    }
+
     public function index() {
-        $comments = Comment::all();
-        return response()->json($comments);
+        $comments = $this->commentService->getComments();
+        return $comments;
     }
     
     public function show(string $id)

@@ -186,6 +186,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Image' => Intervention\Image\Facades\Image::class,
         // 'Example' => App\Facades\Example::class,
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'Auth' => Illuminate\Support\Facades\Auth::class,
     ])->toArray(),
 
 ];
